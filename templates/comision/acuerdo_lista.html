@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+    <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tema</th>
+                        <th>Descripcion</th>
+                        <th>Archivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if archivo %}
+                        {% for datosArchivo in archivo %}
+                            <tr>
+                                <th>{{ datosArchivo.id }}</th>
+                                <th>{{ datosArchivo.FK_Tema }}</th>
+                                <th>{{ datosArchivo.descripcion }}</th>
+                                <th><a href={{datosArchivo.archivo}}>{{datosArchivo.archivo}}</a></th>
+
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                    <h1>No hay registros</h1>
+                    {% endif %}
+                </tbody>
+            </table>
+	{% else %}
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+{% endblock%}

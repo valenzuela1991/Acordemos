@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<hr>
+<div class="form-row">
+    {% if user.is_authenticated %}
+	<div class="form-group col-md-12">
+			<h1><center>Acordemos</center></h1>
+            <h3><center>Tema: "{{tema}}"</center></h3>
+		</div>
+		<p></p>
+    	<div class="form-group col-md-4">
+		</div>
+    	<div class="form-group col-md-4" >
+			<form method="post">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<p></p>
+				<center>
+					<button type="submit" class="btn btn-primary">Registrar</button>
+					<a href="{% url 'acordemos' reunion.id %}" type="button"class="btn btn-primary">Volver</a>
+				</center>
+			</form>
+		</div>
+        <p></p>
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+	</div>
+<hr>
+{% endblock %}

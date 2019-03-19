@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {% if user.is_authenticated %}
+		{% if reuniones %}
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+            </div>
+            </div>
+        </nav>
+    	<div class="form-group col-md-12">
+        <table class="table table-bordered">
+        <thead class="thead-white">
+        <h2><center>REUNIONES</center></h2>
+            <tr>
+                <th bgcolor="#2E64FE"><center>Comision</center></th>
+                <th bgcolor="#2E64FE"><center>Fecha Reunion</center></th>
+                <th bgcolor="#2E64FE"><center>Hora Reunion</center></th>
+                <th bgcolor="#2E64FE"><center>Lugar</center></th>
+                <th bgcolor="#2E64FE"><center>Invitados</center></th>
+                <th bgcolor="#2E64FE"><center>Nuevo Invitado</center></th>
+                <th bgcolor="#2E64FE"><center>Temas</center></th>
+                <th bgcolor="#2E64FE"><center>Nuevo Tema</center></th>
+                <th bgcolor="#2E64FE"><center>Editar</center></th>
+                <th bgcolor="#2E64FE"><center>Eliminar</center></th>
+                <th bgcolor="#2E64FE"><center>Enviar</center></th>
+                <th bgcolor="#2E64FE"><center></center></th>
+                <th bgcolor="#2E64FE"><center>Detalles Reunión</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--OBTENER LOS DATOS SOLO DE LOS MIEMBROS RESPECTIVOS DE LAS COMISIONES-->
+            {% if integrantes %}
+                {% for integrante in integrantes %}
+                    {% if integrante.FK_User_id == user.id %}
+                        {%for reunion in reuniones%}
+                            {% if reunion.FK_Comision_id == integrante.FK_Comision_id %}
+                            <tr>
+                                <th bgcolor="#D6EAF8  "><p>{{ reunion.FK_Comision }}</p></th>
+                                <th bgcolor="#D6EAF8  ">{{ reunion.fechaReunion }}</th>
+                                <th bgcolor="#D6EAF8  ">{{ reunion.horaReunion }}</th>
+                                <th bgcolor="#D6EAF8  ">{{ reunion.lugar }}</th>
+                                <th bgcolor="#D6EAF8  ">
+                                {% for dato in inv %}
+                                    {% if dato.FK_Reunion_id == reunion.id %}
+                                        {{dato.nombre}}{{dato.apellido}}
+                                            <span style="font-size: 1.5em">
+                                        <a href="{% url 'eliminarInvitados'  dato.id %}" style="color:#FF0000;" class="fas fa-user-minus"></a>
+                                                <p></p>
+                                            </span>
+                                    {% endif %}
+                                {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <span style="font-size: 2em; color: Tomato;">
+                                  <center><a href="{% url 'registroInvitados'  reunion.id %}" style="Green;" class="fas fa-user-plus"></a></center></span>
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                {% if temas %}
+                                    {% for tema in temas %}
+                                        {% if tema.FK_Reunion_id == reunion.id %}
+                                            <!--Temas-->
+                                            <a href="{% url 'menuTema' tema.id %}" >{{tema.tema}}</a>
+                                            <!--eliminar tema-->
+                                            <span style="font-size: 1.5em">
+                                            <a href="{% url 'eliminarTema' tema.id %}" style="color:#FF0000;" class="fas fa-trash"></a>
+                                            </span>
+                                                <hr>
+                                            <span style="font-size: 0.7em">
+                                                {% for dato in enlaces %}
+                                                    {% if dato.FK_Tema_id == tema.id %}
+                                                        <center>URL</center>
+                                                        <p>{{dato.url}}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <p></p>
+                                                {% for dato in archivos %}
+                                                    {% if dato.FK_Tema_id == tema.id %}
+                                                        <center>Documento</center>
+                                                        <a href="../static/media/{{dato.media}}">{{dato.media}}</a>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </span>
+                                            <hr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <span style="font-size: 2em; color: Tomato;">
+                                  <center><a href="{% url 'newTema' reunion.id  %}" class="fas fa-file-alt"></a></center></span>
+                                </th>
+
+                                <th bgcolor="#D6EAF8  "><span style="font-size: 2em; color: Tomato;">
+                                  <center><a href="{% url 'editarReunion' reunion.id %}" style="color:#DF7401;" class="fas fa-edit"></a></center>
+                                </span></th>
+                                <th bgcolor="#D6EAF8  "><span style="font-size: 2em; color: Tomato;">
+                                  <center><a href="{% url 'eliminarReunion' reunion.id %}" style="color:#FF0000;" class="fas fa-trash-alt" ></a></center>
+                                </span></th>
+                                <th bgcolor="#D6EAF8  "><span style="font-size: 2em; color: Green;">
+                                  <center><a href="{% url 'enviarCorreo' reunion.id  %}" style="color:Green;" class="far fa-envelope"></a></center>
+                                </span></th>
+                                <th bgcolor="#D6EAF8  "><span style="font-size: 2em; color: Green;">
+                                  <center><a href="{% url 'acordemos' reunion.id %}" class="btn btn-default btn-lg active">ACORDEMOS</a></center>
+                                </span></th>
+                                <th bgcolor="#D6EAF8  "><span style="font-size: 2em; color: Green;">
+                                  <center><a href="{% url 'resumenAcuerdos' reunion.id %}" class="btn btn-default btn-lg active">Resumen</a></center>
+                                </span></th>
+                            </tr>
+                            {%endif%}
+                        {%endfor%}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            <h1>No hay datos integrantes</h1>
+            {%endif%}
+        {% else %}
+            <h1><center>No hay registros</center></h1>
+        {% endif %}
+            </tbody>
+            </table>
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+        </div>
+{% endblock%}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="form-row">
+    {% if user.is_authenticated %}
+    	<div class="form-group col-md-12">
+			<h1><center>Informacion que se despachará</center></h1>
+			<h2><center>Verifique la Informacion de la Reunión.</center></h2>
+		</div>
+        <p></p>
+		<p></p>
+    	<div class="form-group col-md-12" >
+		<center><p class="lead mb-0">Por medio de la presente se les notifica que el dia: "{{reunion.fechaReunion}}"</p></center>
+        <center><p class="lead mb-0">a las: "{{reunion.horaReunion}}", se realizará una reunión en "{{reunion.lugar}}".</p>
+		<p></p>
+		<p></p>
+			<div class="container">
+			<div class="row">
+			  <div class="col-lg-6">
+				<div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+				  <div class="features-icons-icon d-flex">
+					<i class="icon-screen-desktop m-auto text-primary"></i>
+				  </div>
+				  <h3>Invitados</h3>
+					{% for invitado in invitados %}
+							{% if reunion.id == invitado.FK_Reunion_id %}
+								<center><p class="lead mb-0">{{invitado}}</center>
+							{% endif %}
+					{% endfor %}
+				</div>
+			  </div>
+			  <div class="col-lg-6">
+				<div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+				  <div class="features-icons-icon d-flex">
+					<i class="icon-layers m-auto text-primary"></i>
+				  </div>
+					<h3>Temas</h3>
+				  	{% for tema in temas %}
+						{% if tema.FK_Reunion_id == reunion.id %}
+							<center><p class="lead mb-0">- {{tema.tema}}</center>
+							{%for archivo in archivos%}
+								{% if archivo.FK_Tema_id == tema.id %}
+									<center><a href="../../../static/media/{{archivo.media}}" class="lead mb-0">({{archivo.media}})</a></p></center>
+								{% endif %}
+							 {% endfor %}
+						{% endif %}
+					{% endfor %}
+				</div>
+			  </div>
+			</div>
+      		</div>
+			<p></p>
+			<p class="lead mb-0">Esperamos su Participación.</p>
+			<p></p>
+			<form method="post">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<p></p>
+				<center>
+					<button type="submit" class="btn btn-success">Enviar</button>
+					<a href="{% url 'reunionlista' %}" type="button"class="btn btn-primary">Volver</a>
+					<a href="{% url 'editarReunion' reunion.id %}" type="button"class="btn btn-danger">Editar</a>
+				</center>
+			</form>
+		</div>
+        <p></p>
+	</center>
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<hr>
+<h1><center>Nuevo Tema</center></h1>
+<center><h3>{{reu.FK_Comision}}</h3></center>
+<div class="form-row">
+    {% if user.is_authenticated %}
+    	<div class="form-group col-md-12">
+		</div>
+        <p></p>
+    	<div class="form-group col-md-4">
+		</div>
+    	<div class="form-group col-md-4" >
+			<form method="post" >
+				{% csrf_token %}
+				{{ form.as_p }}
+				<p></p>
+				<center>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+					<a href="{% url 'reunionlista' %}" type="button"class="btn btn-primary">Volver</a>
+				</center>
+			</form>
+		</div>
+        <p></p>
+	</center>
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+</div>
+<hr>
+{% endblock %}

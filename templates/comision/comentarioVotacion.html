@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+		{% if reuniones %}
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+            </div>
+            </div>
+        </nav>
+        <table class="table">
+        <thead class="thead-white">
+            <tr>
+				<th><center>Asistentes</center></th>
+				<th><center>1° Acordar</center></th>
+				<th><center>2° Realizar un comentario</center></th>
+				<th><center>3° Realizar votación</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if integrantes %}
+                {% for integrante in integrantes %}
+                    {% if integrante.FK_User_id == user.id %}
+                        <h2><center>ACORDEMOS</center></h2>
+                        {%for reunion in reuniones%}
+                            {% if reunion.FK_Comision_id == integrante.FK_Comision_id %}
+                            <tr>
+                                <th>
+
+                                </th>
+                                <th>
+                                    {%for dato in temas%}
+                                        {% if dato.FK_Reunion_id == reunion.id %}
+
+                                        <span style="font-size: 2em; color: Tomato;">
+                                            <center><a href="{% url 'crearacuerdo' dato.id %}" class="fas fa-handshake">{{dato.tema}}</a></center>
+                                        </span>
+
+                                        {% endif %}
+                                    {%endfor%}
+                                </th>
+                                <th><span style="font-size: 3em; color: Tomato;">
+                                  <center><a href="{% url 'comentariosAcuerdos' reunion.id  %}" class="fas fa-comment-dots"></a></center>
+                                </span></th>
+                                <th><span style="font-size: 3em; color: Tomato;">
+                                  <center><a href="{% url 'votacionAcuerdo' reunion.id  %}" class="fas fa-vote-yea"></a></center>
+                                </span></th>
+                            </tr>
+                            {%endif%}
+                        {%endfor%}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            <h1>No hay datos integrantes</h1>
+            {%endif%}
+        {% else %}
+            <h1><center>No hay registros</center></h1>
+        {% endif %}
+            </tbody>
+            </table>
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+{% endblock%}

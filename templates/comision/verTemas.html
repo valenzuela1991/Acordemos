@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <hr>
+    <div class="form-row">
+        {% if user.is_authenticated %}
+            <div class="form-group col-md-12">
+                <h1><center>Agregar Informacion Relevante</center></h1>
+                <center><h2>Tema a tratar: {{temaID}} </h2></center>
+            </div>
+            <p></p>
+            <div class="form-group col-md-2">
+            </div>
+            <div class="form-group col-md-8" >
+                    <center>
+                        <span style="font-size: 2em;">
+                            <center><a href="{% url 'crearEnlace' temaID.id %}" class="fas fa-link"></a> Url</center>
+                        </span>
+                        <span style="font-size: 2em;">
+                            <center><a href="{% url 'crearArchivo' temaID.id %}" class="fas fa-file-upload"></a> Archivo</center>
+                        </span>
+                        <p></p>
+                        <a href="{% url 'reunionlista' %}" type="button"class="btn btn-primary">Volver</a>
+                    </center>
+            </div>
+            <p></p>
+        </center>
+        {% else %}
+            <h1>DEBES INICIAR SESION!</h1>
+            <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+        {% endif %}
+    </div>
+    <hr>
+{% endblock%}

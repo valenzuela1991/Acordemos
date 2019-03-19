@@ -1,0 +1,198 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+      <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    <title>Acordemos</title>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    {% block css %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css" rel="stylesheet' %}">
+    <link href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet' %}" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/landing-page.min.css' %}" rel="stylesheet">
+
+    {% endblock %}
+  </head>
+
+
+  <body>
+  <!-- MENU DE USUARIO -->
+  <nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="/">Gestion de Acuerdos Universidad de Playa Ancha</a>
+        {% if user.is_authenticated %}
+            {% if integrante %}
+                {% for datos1 in integrante %}
+                    {% if datos1.FK_User_id == user.id%}
+                        <!-- SECRETARIO -->
+                        {% if datos1.FK_TipoRol_id == 1 %}
+                        <div class="btn-toolbar" role="toolbar">
+                            <a href="{% url 'registroReunion' user.id %}" class="btn btn-default btn-lg active" role="button">Crear Convocatoria</a>
+                            <a href="{% url 'reunionlista' %}" class="btn btn-default btn-lg active" role="button">Mis Reuniones</a>
+
+                        </div>
+                        {% else %}
+                            <!-- PRESIDENTE -->
+                            {% if datos1.FK_TipoRol_id == 2 %}
+                            <div class="btn-toolbar" role="toolbar">
+                                <a href="{% url 'registroReunion' user.id %}" class="btn btn-default btn-lg active" role="button">Crear Convocatoria</a>
+                                <a href="{% url 'reunionlista' %}" class="btn btn-default btn-lg active" role="button">Mis Reuniones</a>
+
+                            </div>
+                            {% else %}
+                              <!-- INTEGRANTE -->
+                              {% if datos1.FK_TipoRol_id == 3 %}
+                                <div class="btn-toolbar" role="toolbar">
+                                    <a href="{% url 'reunionlista' %}" class="btn btn-default btn-lg active" role="button">Mis Reuniones</a>
+                                </div>
+                              {% else %}
+                              {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            {% endif %}
+    </div>
+      <div class="btn-toolbar" role="toolbar">
+          <div class="btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                {{user.email}} <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <center><li><a href="{% url 'perfil' %}" class="btn btn-default ">Perfil de Usuario</a></li></center>
+                <center><li><a href="{% url 'salir' %}" class="btn btn-default ">Cerrar Sesión</a></li></center>
+              </ul>
+            </div>
+      </div>
+        {% else %}
+          <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-primary">Ingresar</a>
+        {% endif %}
+    </div>
+  </nav>
+
+    <!--Imagen de Inicio (SIN Buscador)-->
+    <section class="call-to-action text-white text-center">
+      <div class="overlay"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-12 mx-auto">
+              <div class="row">
+                <div class="col-xl-69 mx-auto">
+                  <h1 class="mb-4">Bienvenidos a Acordemos.</h1>
+                  <h3>ACORDEMOS,  es una aplicación web,  que gestiona la dinámica de los acuerdos que se llevaron a cabo en reuniones en la Universidad. </h3>
+                  <p></p>
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                  <!--FORMULARIO
+                  <form method="get" action="">
+                    <div class="form-row">
+                      <div class="col-12 col-md-10 mb-2 mb-md-0">
+                        <input type="text" name="palabraclave" id="buscador1" class="form-control form-control-lg" placeholder="Ingresa una palabra clave para iniciar la busqueda...">
+                      </div>
+                      <div class="col-12 col-md-2">
+                        <button type="submit" class="btn btn-block btn-lg btn-primary">Buscar</button>
+                      </div>
+                    </div>
+                  </form>
+                  -->
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blockes de: usuario,content-->
+    <div class="conteiner">
+         <div class="panel panel-default">
+              <div class="panel-body">
+                        {% block acuerdos %}
+                        {% endblock acuerdos %}
+                        {% block content %}
+                        {% endblock content %}
+              </div>
+         </div>
+    </div>
+
+    <!-- Descripcion las funciones de ACORDEMOS -->
+    <section class="features-icons bg-light text-center">
+      <div class="container">
+          <h1> Opciones de Secretario </h1>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-screen-desktop m-auto text-primary"></i>
+              </div>
+              <h3>Crear Convocatoria</h3>
+              <p class="lead mb-0">"Crear Convocatoria" nos ofrece la opción de crear un reunión. Permite elegir la fecha, hora y lugar en que se realizará.</p>
+            </div>
+
+          </div>
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-layers m-auto text-primary"></i>
+              </div>
+                <h3>Mis Reuniones</h3>
+              <p class="lead mb-0">Muestra todas las reuniones del miembro de la Comisión. Podra "Agregar Invitados" , "Agregar Temas" y "Enviar" la convocatoria a todos los invitados de la Reunión.</p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+              <div class="features-icons-icon d-flex">
+                <i class="icon-check m-auto text-primary"></i>
+              </div>
+                <h3>Acordemos</h3>
+              <p class="lead mb-0">Ubicado en "Mis Reuniones" nos permitira:</p>
+               <p class="lead mb-0">- Pasar Asistencia</p>
+               <p class="lead mb-0">- Realizar Acuerdos por cada tema.</p>
+               <p class="lead mb-0">- Comentario y Votación de los miembros presentes.</p>
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+                                    <hr>
+
+    <!-- Footer -->
+    <footer class="footer bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center my-auto">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item">
+                <a href="{% url 'acuerdoLista' %}">Ver Acuerdos</a>
+              </li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">Copyright &copy; Acordemos 2018</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    {% block js %}
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% endblock %}
+  </body>
+
+</html>

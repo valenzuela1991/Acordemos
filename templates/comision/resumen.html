@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {% if user.is_authenticated %}
+		{% if reuniones %}
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+            </div>
+            </div>
+        </nav>
+    	<div class="form-group col-md-12">
+            <table class="table table-bordered">
+        <thead class="thead-white">
+            <tr>
+                <th bgcolor="#2E64FE"><center>Tema</center></th>
+                <th bgcolor="#2E64FE"><center>Comentarios</center></th>
+                <th bgcolor="#2E64FE"><center>Votos</center></th>
+                <th bgcolor="#2E64FE"><center>Acta</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tema in temas %}
+                {%if tema.FK_Reunion_id == reuniones.id %}
+                    <tr>
+                                <th bgcolor="#D6EAF8  "><p>{{ tema }}</p></th>
+                                <th bgcolor="#D6EAF8  ">
+                                    {% for acuerdo in acuerdos %}
+                                            {% if acuerdo.FK_Tema_id == tema.id %}
+                                                <li>Acuerdo: "{{acuerdo.acuerdo}}"</li>
+                                                {% for comentario in comentarios %}
+                                                    {% if comentario.FK_Acuerdo_id == acuerdo.id %}
+                                                        <!--COMENTARIO-->
+                                                        {{comentario.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{comentario.FK_Asistencia.FK_Integrante.FK_User.last_name}}: "{{comentario.comentario}}"
+                                                        <hr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    {% for acuerdo in acuerdos %}
+                                            {% if acuerdo.FK_Tema_id == tema.id %}
+                                                <li>Acuerdo: "{{acuerdo.acuerdo}}"</li>
+                                                {% for votos in votacion %}
+                                                    {% if votos.FK_Acuerdo_id == acuerdo.id %}
+                                                        {% if votos.voto == 1 %}
+                                                        <p class="lead mb-0" style="color:Green;">{{votos.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{votos.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                                            {% else %}
+                                                                {% if votos.voto == -1 %}
+                                                                    <p class="lead mb-0" style="color:Red;">{{votos.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{votos.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                                                {% else %}
+                                                                    <p class="lead mb-0" style="color:Orange;">{{votos.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{votos.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}<hr>
+                                            {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    {% for acuerdo in acuerdos %}
+                                            {% if acuerdo.FK_Tema_id == tema.id %}
+                                                {% for acta in actas %}
+                                                    {% if acta.FK_Acuerdo_id == acuerdo.id %}
+                                                        <a href="../static/media/{{acta.media}}">{{acta.media}}</a>
+                                                    {% endif %}
+                                                {% endfor %}
+                                             {% endif %}
+                                    {% endfor %}
+                                </th>
+                            </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+            </table>
+            <center><a href="{% url 'reunionlista' %}" type="button"class="btn btn-primary">Volver</a></center>
+        {% else %}
+            no hay reuniones
+        {% endif %}
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+        </div>
+{% endblock%}

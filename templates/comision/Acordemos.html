@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+		{% if reunion %}
+
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+            </div>
+            </div>
+        </nav>
+    	<div class="form-group col-md-12">
+        <table class="table table-bordered">
+        <thead class="thead-white">
+            <tr>
+                <th bgcolor="#2E64FE">Comision</th>
+				<th bgcolor="#2E64FE"><center>1° Pasar Asistencia</center></th>
+				<th bgcolor="#2E64FE"><center>Ausentes</center></th>
+				<th bgcolor="#2E64FE"><center>Presentes</center></th>
+				<th bgcolor="#2E64FE"><center>Quorum</center></th>
+				<th bgcolor="#2E64FE"><center>2° Realizar Acuerdos</center></th>
+				<th bgcolor="#2E64FE"><center>Lista de acuerdos</center></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--OBTENER LOS DATOS SOLO DE LOS MIEMBROS RESPECTIVOS DE LAS COMISIONES-->
+            {% if integrantes %}
+                {% for integrante in integrantes %}
+                    {% if integrante.FK_User_id == user.id %}
+                        <h2><center>ACORDEMOS</center></h2>
+                            <tr>
+                                <th bgcolor="#D6EAF8  ">{{ reunion.FK_Comision }}</th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!--Integrantes de la Comision-->
+                                    {% for i in integrantes %}
+                                        {% if i.FK_Comision_id == reunion.FK_Comision_id %}
+
+                                            <li><a href="{% url 'pasarAsistencia' i.id reunion.id %}">{{i.FK_User.first_name}} {{i.FK_User.last_name}}</a></li>
+
+                                        {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!-- AUSENTES de la Comision-->
+                                    {% for x in asistente %}
+                                        {% if x.FK_Reunion_id == reunion.id %}
+                                            {% if x.asiste == "No" %}
+                                                <p>{{x.FK_Integrante.FK_User.first_name}} {{x.FK_Integrante.FK_User.last_name}}</p>
+                                                <a href="{% url 'eliminarAsistencia' x.id reunion.id %}"style="color:#FF0000;" class="fas fa-trash-alt"></a>
+                                                <hr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!--PRESENTES de la Comision-->
+                                    {% for x in asistente %}
+                                        {% if x.FK_Reunion_id == reunion.id %}
+                                            {% if x.asiste == "Si" %}
+                                                <p>{{x.FK_Integrante.FK_User.first_name}} {{x.FK_Integrante.FK_User.last_name}}
+                                                <a href="{% url 'eliminarAsistencia' x.id reunion.id %}" style="color:#FF0000;" class="fas fa-trash-alt"></a>
+                                                <hr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!--QUORUM de la Comision-->
+                                    <center>{{ reunion.FK_Comision.quorum }}</center>
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!--ACUERDOS de la Comision-->
+                                    {% for dato in temas %}
+                                        {% if dato.FK_Reunion_id == reunion.id %}
+                                            {{dato.tema}}
+                                            <a href="{% url 'crearacuerdo' dato.id reunion.id %}" class="fas fa-handshake"></a>
+                                            <hr>
+                                         {% endif %}
+                                    {% endfor %}
+                                </th>
+                                <th bgcolor="#D6EAF8  ">
+                                    <!--Lista de acuerdos-->
+                                    {% for a in acuerdo %}
+                                         {% if a.FK_Tema.FK_Reunion_id == reunion.id %}
+                                            <li>{{a.FK_Tema.tema}}: {{a.acuerdo}}</li>
+                                            <p></p>
+                                         {% endif %}
+                                    {% endfor %}
+                                </th>
+                            </tr>
+                    {% endif %}
+                {%endfor%}
+            </tbody>
+        </table>
+        <nav class="navbar navbar-light bg-light static-top">
+            <div class="container">
+            </div>
+            </div>
+        </nav>
+    	<div class="form-group col-md-12">
+        <table class="table table-bordered">
+        <thead class="thead-white">
+                {% if participantes >= reunion.FK_Comision.quorum %}
+                <th bgcolor="#Green"><span style="font-size: 1em; color: Green;">
+                    <center>Numero de Participantes Necesarios: {{reunion.FK_Comision.quorum}}</center>
+                </span></th>
+                {% else %}
+                <th bgcolor="#Red"><span style="font-size: 1em; color: Red;">
+                    <center>Numero de Participantes Necesarios: {{reunion.FK_Comision.quorum}}</center>
+                </span></th>
+                {% endif %}
+            </tr>
+        </thead>
+        <table class="table">
+
+            <tr bgcolor="#D6EAF8">
+                <th>
+                 <div class="row">
+                    <div class="col-lg-6">
+                    <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-6">
+                    {% if reunion.FK_Comision.quorum <= participantes %}
+                        {% for acuerdo in acuerdo %}
+                            {% if acuerdo.FK_Tema.FK_Reunion_id == reunion.id %}
+                                <center><h3>Tema: {{acuerdo.FK_Tema}}</h3></center>
+                                <center><h3>Acuerdo: {{acuerdo.acuerdo}}</h3></center>
+                                {% if acuerdo.estado == "Aceptado" %}
+                                    <center><p style="color:Green;">Estado: {{acuerdo.estado}}</p></center>
+                                    {% else %}
+                                    {% if acuerdo.estado == "Rechazado" %}
+                                        <center><p style="color:Red;">Estado: {{acuerdo.estado}}</p></center>
+                                    {% else %}
+                                        <center><p style="color:Orange;">Estado: {{acuerdo.estado}}</p></center>
+                                    {% endif %}
+                                {% endif %}
+                                {% for integrante in integrantes %}
+                                    {% if integrante.FK_User_id == user.id and integrante.FK_TipoRol_id == 1 %}
+                                        <center>
+                                            <center><a href="{% url 'editarAcuerdo' reunion.id acuerdo.id %}">Cambiar Estado Acuerdo</a></center>
+                                        </center>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% for asiste in asistente %}
+                                    {% if asiste.FK_Reunion_id == reunion.id %}
+                                        {% if asiste.asiste == "Si" %}
+                                        <li>{{asiste.FK_Integrante.FK_User.first_name}} {{asiste.FK_Integrante.FK_User.last_name}}
+
+                                            {% for integrante in integrantes %}
+                                                {% if integrante.FK_User_id == user.id and integrante.FK_TipoRol_id == 1 %}
+                                                    <span style="font-size: 3em; color: Tomato;">
+                                                        <a href="{% url 'comentariosAcuerdos' asiste.id acuerdo.id reunion.id %}" class="fas fa-comment-dots"></a>
+                                                    </span>
+                                                    <span style="font-size: 3em; color: Tomato;">
+                                                        <a href="{% url 'votacionAcuerdo' asiste.id acuerdo.id reunion.id %}" class="fas fa-vote-yea"></a>
+                                                    </span>
+                                                    <p></p>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                <hr>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    </div>
+                     <div class="col-lg-6">
+                        <div class="features-icons-item mx-auto mb-5 mb-lg- mb-lg-6">
+                           <center><h4>Datos:</h4></center>
+                            <p class="lead mb-0"></p>
+                            <p class="lead mb-0"><b>Comision:</b> {{reunion.FK_Comision.nombreComision}} </p>
+                            <p class="lead mb-0"><b>Lugar:</b> {{reunion.lugar}} </p>
+                            <p class="lead mb-0"><b>Hora:</b> {{reunion.horaReunion}} </p>
+                            <p class="lead mb-0"><b>Fecha:</b> {{reunion.fechaReunion}} </p>
+                        </div>
+                        <div class="features-icons-item mx-auto mb-5 mb-lg- mb-lg-6">
+                           <center><h4>Votaciones:</h4></center>
+                            {% for tema in temas %}
+                                {% if tema.FK_Reunion_id == reunion.id %}
+
+                                    <h4 class="lead mb-0"><b>Tema:</b> "{{tema.tema}}"</h4>
+                                    {% for voto in votaciones %}
+                                        {% if voto.FK_Acuerdo.FK_Tema_id == tema.id %}
+                                            {% if voto.voto == 1 %}
+                                                <li> {{voto.FK_Acuerdo.acuerdo}} <p class="lead mb-0" style="color:Green;">{{voto.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{voto.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                            {% else %}
+                                                {% if voto.voto == -1 %}
+                                                    <li> {{voto.FK_Acuerdo.acuerdo}} <p class="lead mb-0" style="color:Red;">{{voto.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{voto.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                                {% else %}
+                                                    <li> {{voto.FK_Acuerdo.acuerdo}} <p class="lead mb-0" style="color:Orange;">{{voto.FK_Asistencia.FK_Integrante.FK_User.first_name}} {{voto.FK_Asistencia.FK_Integrante.FK_User.last_name}}</p>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                        <hr>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                     </div>
+                 </div>
+                    <hr>
+                        <!--Solo los Secretarios podrán generar el documento PDF-->
+                        {% for integrante in integrantes %}
+                            {% if integrante.FK_User_id == user.id and integrante.FK_TipoRol_id == 1 %}
+                                <center>
+                                    <a href="{% url 'generarPDF' reunion.id %}" class="btn btn-primary">Generar Documento</a>
+                                    <a href="{% url 'reunionlista' %}" type="button"class="btn btn-primary">Volver</a>
+                                </center>
+                            {% endif %}
+                        {% endfor %}
+                        <hr>
+                        <hr>
+                    {% else %}
+                        <!--<h1>No hay quorum</h1>-->
+                    {% endif %}
+                </th>
+            </tr>
+            {% else %}
+                <h1>No hay datos de Integrantes</h1>
+            {%endif%}
+            </tbody>
+            </table>
+        {% else %}
+            <h1><center>No Existe Reunion</center></h1>
+        {% endif %}
+	{% else %}
+		<h1>DEBES INICIAR SESION!</h1>
+        <a href="{% url 'home' %}" type="button"class="btn btn-primary">Volver</a>
+    {% endif %}
+{% endblock%}

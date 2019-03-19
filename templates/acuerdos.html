@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block acuerdos %}
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+    </div>
+    </div>
+        </nav>
+    	<div class="form-group col-md-12">
+            <h1><center>Acuerdos Aprobados</center></h1>
+        <table class="table table-bordered">
+        <thead class="thead-white">
+            <tr>
+                <th bgcolor="#2E64FE"><center>Comision que realiza el Acuerdo</center></th>
+                <th bgcolor="#2E64FE"><center>Temas</center></th>
+                <th bgcolor="#2E64FE"><center>Fecha en que se realizo el Acuerdo</center></th>
+                <th bgcolor="#2E64FE"><center>Descargar Documento</center></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for acuerdo in acuerdoAceptados %}
+        <tr>
+            <th><li>{{acuerdo.FK_Tema.FK_Reunion.FK_Comision}}</th>
+            <th>{{acuerdo.FK_Tema}}</th>
+            <th>{{acuerdo.FK_Tema.FK_Reunion.fechaReunion}}</th>
+            <th>
+            {% for integrante in integrantes %}
+                {% if integrante.FK_User_id == user.id and integrante.FK_TipoRol_id == 1 and acuerdo.FK_Tema.FK_Reunion.FK_Comision_id == integrante.FK_Comision_id%}
+                        <center>
+                            <a href="{% url 'subirActa' acuerdo.id %}" class="fas fa-file-upload"> Subir Acta</a>
+                        </center>
+                {% endif %}
+             {% endfor %}
+            {% for a in acta %}
+                {% if acuerdo.id == a.FK_Acuerdo_id %}
+                    <li><a href="../static/media/{{a.media}}">{{a.media}}</a></li>
+                    {% for integrante in integrantes %}
+                        {% if integrante.FK_User_id == user.id and integrante.FK_TipoRol_id == 1 and acuerdo.FK_Tema.FK_Reunion.FK_Comision_id == integrante.FK_Comision_id%}
+                                <span style="font-size: 1em; color: Tomato;">
+                                  <a href="{% url 'borrarActa' a.id %}" style="color:#FF0000;" class="fas fa-trash-alt" ></a>
+                                </span>
+                        {% endif %}
+                     {% endfor %}
+                {% endif %}
+            {% endfor %}
+            </th>
+        </tr>
+        {%endfor%}
+        </tbody>
+        </table>
+        </div>
+{% endblock acuerdos %}
