@@ -9,7 +9,7 @@ SECRET_KEY = 'g-b-oi&r#k#1e$$km1)+3eedljkzsdrtmb2#5w!5v@tg^&0)%n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["acordemos.datoslab.cl","142.93.206.11"]
 
 # Application definition
 INSTALLED_APPS = [ 'django.contrib.admin',
