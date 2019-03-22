@@ -146,4 +146,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'acordemos.app@gmail.com'
 EMAIL_HOST_PASSWORD = 'acordemos1234'
 
-STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+STATIC_ROOT = os.path.join(BASE_DIR,'assets/')
