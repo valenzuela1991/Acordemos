@@ -65,7 +65,7 @@ WSGI_APPLICATION = 'Acordemos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'GestorAcuerdos.sqlite3',
+        'NAME': '/home/acordemos/acordemos/public_html/GestorAcuerdos.sqlite3',
         'USER': 'root',
         'PASSWORD:':'',
         'HOST:':'',
