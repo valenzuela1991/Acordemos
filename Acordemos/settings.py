@@ -128,7 +128,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '361785313928-ju8i0f53s741fvqhncplgaif9f4l5vjq.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Hi7FMN1GdVHygd7_z_IkA9EF'
 
 #Direccion donde se almacenaran los archivos
-MEDIA_ROOT = 'acordemos/public_html/static/media'
+MEDIA_ROOT = '/home/acordemos/acordemos/public_html/static/media'
 MEDIA_URL = '\static/media/'
 
 # Static files (CSS, JavaScript, Images, Archivos en general)
